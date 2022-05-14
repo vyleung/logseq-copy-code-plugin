@@ -1,12 +1,9 @@
 ## logseq-copy-code-plugin
 > If you find this plugin – or any of my other [Logseq plugins](https://github.com/vyleung?tab=repositories&q=logseq&type=source) – useful and would like to support me, you can [buy me a coffee](https://www.buymeacoffee.com/vyleung) 🙂
 
-🚨 **NOTE:** Your Logseq version must be 0.6.7+ to run this plugin  
-
 ## Features
 ### Copy code from code blocks
 - The position of the copy code icon can be configured in the [settings](#settings)
-    - The copy code button may disappear if you edit the code block directly rather than in the Code Mirror editor. To get the button to re-appear, you can a new block underneath the code block – OR — toggle the collapse state of any block
 #### Demo
 ![logseq-copy-code-plugin main demo](screenshots/logseq_copy_code_main_demo.gif)  
 
