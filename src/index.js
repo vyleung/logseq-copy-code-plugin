@@ -24,13 +24,16 @@ const copied_icon = `<svg id="copied-icon" xmlns="http://www.w3.org/2000/svg" cl
 let code_blocks;
 let code_block_uuid;
 let code_block_parent;
+let inline_codes;
+let inline_code_uuid;
+let prefix;
 
 const main = async () => {
   console.log("logseq-copy-code-plugin loaded");
 
   // doesn't detect when block is being edited (requires a new block to be added or a block's collapsed state to be toggled to run the function) - current workaround is to use mutation observer
   // logseq.DB.onChanged(() => {
-  //   insertCopyCodeButton();
+  //   insertCopyCodeButton_CodeBlock();
   // });
 
   // ref for mutation observer: https://github.com/xxchan/logseq-deadline-countdown/blob/a6cd2265b3f52d708341b47fca6e747c5c1506f8/index.js#L25-L44
@@ -41,7 +44,12 @@ const main = async () => {
           // after exiting the code block editor, insert the copy code button
           const code_mirror = added_node.querySelectorAll(".CodeMirror");
           for (const code of code_mirror) {
-            insertCopyCodeButton();
+            insertCopyCodeButton_CodeBlock();
+          }
+          // after exiting edit mode, insert the copy copy button next to inline code
+          const inline_code_text = added_node.querySelectorAll(".content :not(pre) > code");
+          for (const text of inline_code_text) {
+            insertCopyCodeButton_InlineCode();
           }
         }
       }
@@ -55,7 +63,7 @@ const main = async () => {
     mutation_observer.disconnect();
   });
 
-  function insertCopyCodeButton() {
+  function insertCopyCodeButton_CodeBlock() {
     // get all code blocks
     code_blocks = parent.document.querySelectorAll(".code-editor > textarea");
 
@@ -106,14 +114,82 @@ const main = async () => {
       `)
     });
   }
-  insertCopyCodeButton();
+  insertCopyCodeButton_CodeBlock();
+
+  function insertCopyCodeButton_InlineCode() {
+    inline_codes = parent.document.querySelectorAll(".content :not(pre) > code");
+    // only get inline code not the cmd palette
+
+    inline_codes.forEach(inline_code => { 
+      if (inline_code.id == "") {
+        // generate a string w/ 7 random letters and numbers as the prefix for the inline code's id
+        prefix = `copy-code-${(Math.random() + 1).toString(36).substring(5)}-prefix`;
+
+        // for plugin dev
+        if (inline_code.parentElement.offsetParent.parentElement.parentElement.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
+          inline_code_uuid = inline_code.parentElement.offsetParent.parentElement.parentElement.classList[1];
+
+          // add an ID to differentiate multiple inline codes within one block
+          inline_code.id = `${prefix}-${inline_code_uuid}`;
+        }
+        // for plugin prod
+        // TODO: testing to get path
+        else {
+          console.log("1", inline_code.parentElement.offsetParent)
+          console.log("2", inline_code.parentElement.offsetParent.parentElement)
+        }
+
+        // insert copy code button
+        logseq.provideUI({
+          key: `${inline_code.id}`,
+          path: `#${inline_code.id}`,
+          template: 
+          `
+          <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="display: none; padding: 0; margin-left: 0.25em;">
+            ${copy_icon}
+          </a>
+          `
+        });
+
+        // style container for copy code button
+        logseq.provideStyle(`
+          #logseq-copy-code-plugin--${inline_code.id} {
+            display: inline-flex;
+            position: relative;
+            z-index: 99;
+            vertical-align: top;
+            top: 0.15em;
+          }
+        `)
+
+        // hovering over an inline code shows a copy code button; leaving the code hides the button
+        parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseover", function () {
+          if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
+            parent.document.getElementById(`${inline_code.id}-button`).style.display = "inline-flex";
+          }
+          else {
+            console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code (A)");
+          }
+        });
+        parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseout", function () {
+          if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
+            parent.document.getElementById(`${inline_code.id}-button`).style.display = "none";
+          }
+          else {
+            console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code (B)");
+          }
+        });
+      }
+    });
+  }
+  insertCopyCodeButton_InlineCode();
 
   logseq.provideModel({
     copy_code(e) {
-      let code_block_copy_button_id = e.id;
-
       // necessary to have the window focused in order to copy the content of the code block to the clipboard
       window.focus();
+
+      let code_block_copy_button_id = e.id;
 
       // get the content of the code block and copy it to the clipboard
       let code_block_textarea = parent.document.getElementById(code_block_copy_button_id.split("copy-code-")[1].split("-button")[0]);
@@ -124,6 +200,23 @@ const main = async () => {
       code_block_copy_icon.innerHTML = copied_icon;
       setDriftlessTimeout(() => {
         code_block_copy_icon.innerHTML = copy_icon;  
+      }, 750);
+    },
+    copy_code_inlineBlock(e) {
+      // focus the window
+      window.focus();
+
+      let inline_code_copy_button_id = e.id;
+      
+      // get the content of the inline code and copy it to the clipboard
+      let inline_code_content = parent.document.getElementById(inline_code_copy_button_id.split("-button")[0]).innerText;
+      navigator.clipboard.writeText(inline_code_content);
+
+      // change the icon from copy to copied, then back to copy
+      let inline_code_copy_icon = parent.document.getElementById(`${inline_code_copy_button_id}`);
+      inline_code_copy_icon.innerHTML = copied_icon;
+      setDriftlessTimeout(() => {
+        inline_code_copy_icon.innerHTML = copy_icon;  
       }, 750);
     }
   });
