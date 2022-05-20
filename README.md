@@ -1,6 +1,8 @@
 ## logseq-copy-code-plugin
 > If you find this plugin – or any of my other [Logseq plugins](https://github.com/vyleung?tab=repositories&q=logseq&type=source) – useful and would like to support me, you can [buy me a coffee](https://www.buymeacoffee.com/vyleung) 🙂
 
+🚨 If the plugin doesn't work properly after installing or updating, please refresh Logseq before opening an issue
+
 ## Features
 ### Copy code from code blocks
 - The position of the copy code icon can be configured in the [settings](#settings)
