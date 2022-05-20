@@ -118,8 +118,8 @@ const main = async () => {
 
   function insertCopyCodeButton_InlineCode() {
     inline_codes = parent.document.querySelectorAll(".content :not(pre) > code");
-    // only get inline code not the cmd palette
 
+    // for each inline code, get the uuid of the block that it's in
     inline_codes.forEach(inline_code => { 
       if (inline_code.id == "") {
         // generate a string w/ 7 random letters and numbers as the prefix for the inline code's id
@@ -128,16 +128,18 @@ const main = async () => {
         // for plugin dev
         if (inline_code.parentElement.offsetParent.parentElement.parentElement.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
           inline_code_uuid = inline_code.parentElement.offsetParent.parentElement.parentElement.classList[1];
-
-          // add an ID to differentiate multiple inline codes within one block
-          inline_code.id = `${prefix}-${inline_code_uuid}`;
         }
         // for plugin prod
         // TODO: testing to get path
-        else {
-          console.log("1", inline_code.parentElement.offsetParent)
-          console.log("2", inline_code.parentElement.offsetParent.parentElement)
+        else if (inline_code.parentElement.offsetParent.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
+          inline_code_uuid = inline_code.parentElement.offsetParent.classList[1];
         }
+        else {
+          console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code's parent uuid");
+        }
+
+        // add an ID to differentiate multiple inline codes within one block
+        inline_code.id = `${prefix}-${inline_code_uuid}`;
 
         // insert copy code button
         logseq.provideUI({
