@@ -96,7 +96,7 @@ const main = async () => {
         path: `#block-content-${code_block_uuid} > .block-body > .cp__fenced-code-block > div > #${code_block_parent.id}`,
         template: 
         `
-        <a class="button copy-button" id="${code_block_parent.id}-button" data-on-click="copy_code" style="display:flex; position:absolute;">
+        <a class="button copy-button" id="${code_block_parent.id}-button" data-on-click="copy_code_CodeBlock" style="display:flex; position:absolute;">
           ${copy_icon}
         </a>
         `
@@ -133,9 +133,6 @@ const main = async () => {
         else if (inline_code.parentElement.offsetParent.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
           inline_code_uuid = inline_code.parentElement.offsetParent.classList[1];
         }
-        else {
-          console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code's parent uuid");
-        }
 
         // add an ID to differentiate multiple inline code within one block
         inline_code.id = `${prefix}-${inline_code_uuid}`;
@@ -146,7 +143,7 @@ const main = async () => {
           path: `#${inline_code.id}`,
           template: 
           `
-          <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="display: none; padding: 0; margin-left: 0.25em;">
+          <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="display: none; padding: 0; margin-left: 0.25em; border-bottom-color: transparent !important;">
             ${copy_icon}
           </a>
           `
@@ -186,7 +183,7 @@ const main = async () => {
   insertCopyCodeButton_InlineCode();
 
   logseq.provideModel({
-    copy_code(e) {
+    copy_code_codeBlock(e) {
       // necessary to have the window focused in order to copy the content of the code block to the clipboard
       window.focus();
 
