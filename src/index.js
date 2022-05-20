@@ -96,7 +96,7 @@ const main = async () => {
         path: `#block-content-${code_block_uuid} > .block-body > .cp__fenced-code-block > div > #${code_block_parent.id}`,
         template: 
         `
-        <a class="button copy-button" id="${code_block_parent.id}-button" data-on-click="copy_code_CodeBlock" style="display:flex; position:absolute;">
+        <a class="button copy-button" id="${code_block_parent.id}-button" data-on-click="copy_code_codeBlock" style="display:flex; position:absolute;">
           ${copy_icon}
         </a>
         `
