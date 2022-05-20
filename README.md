@@ -5,7 +5,11 @@
 ### Copy code from code blocks
 - The position of the copy code icon can be configured in the [settings](#settings)
 #### Demo
-![logseq-copy-code-plugin main demo](screenshots/logseq_copy_code_main_demo.gif)  
+![logseq-copy-code-plugin main demo](screenshots/logseq_copy_code_main_demo.gif)
+
+### Copy inline code
+#### Demo
+![logseq-copy-code-plugin inline code demo](screenshots/logseq_copy_code_inline_code_demo.gif)
 
 ## Installation
 ### Preparation
