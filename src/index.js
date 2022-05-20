@@ -130,7 +130,6 @@ const main = async () => {
           inline_code_uuid = inline_code.parentElement.offsetParent.parentElement.parentElement.classList[1];
         }
         // for plugin prod
-        // TODO: testing to get path
         else if (inline_code.parentElement.offsetParent.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
           inline_code_uuid = inline_code.parentElement.offsetParent.classList[1];
         }
@@ -138,7 +137,7 @@ const main = async () => {
           console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code's parent uuid");
         }
 
-        // add an ID to differentiate multiple inline codes within one block
+        // add an ID to differentiate multiple inline code within one block
         inline_code.id = `${prefix}-${inline_code_uuid}`;
 
         // insert copy code button
