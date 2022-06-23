@@ -8,6 +8,13 @@ const settings = [
     description: "Default: -1em. To move the copy code icon lower, insert a more positive number (e.g. 0em). To move the copy code icon higher, insert a more negative number (e.g. -2em)",
     type: "string",
     default: "-1em"
+  },
+  {
+    key: "IconRightPosition",
+    title: "Edit the right position of the copy code icon",
+    description: "Default: 0em. To move the copy code icon to the right, insert a more positive number (e.g. 1em). To move the copy code icon to the left, insert a more negative number (e.g. -1em)",
+    type: "string",
+    default: "0em"
   }
 ]
 logseq.useSettingsSchema(settings);
@@ -109,7 +116,7 @@ const main = async () => {
           z-index: 99;
           height: 0;
           top: ${logseq.settings.IconTopPosition};
-          right: 0;
+          right: ${logseq.settings.IconRightPosition};
         }
       `)
     });
