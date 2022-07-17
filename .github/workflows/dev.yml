@@ -8,7 +8,6 @@ on:
 
 env:
   PLUGIN_NAME: logseq-copy-code-plugin
-  PLUGIN_VERSION: ${{ github.ref_name##*/ }}
 
 jobs:
   build:
@@ -20,6 +19,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x' # You might need to adjust this value to your own version
+      - name: Get the plugin version
+        shell: bash
+        run: echo "::set-output name=branch::${GITHUB_REF_NAME##*/}"
+        id: plugin_version
       - name: Build
         id: build
         run: |
@@ -27,7 +30,7 @@ jobs:
           mkdir ${{ env.PLUGIN_NAME }}
           cp README.md package.json icon.png ${{ env.PLUGIN_NAME }}
           mv dist ${{ env.PLUGIN_NAME }}
-          zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip ${{ env.PLUGIN_NAME }}
+          zip -r ${{ env.PLUGIN_NAME }}-${{ steps.plugin_version.outputs.branch }}.zip ${{ env.PLUGIN_NAME }}
           ls
       - name: Upload zip file
         uses: actions/upload-artifact@v3
@@ -35,5 +38,5 @@ jobs:
         with:
           name: ${{ env.PLUGIN_NAME }}
           path:
-            ./${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
+            ./${{ env.PLUGIN_NAME }}-${{ steps.plugin_version.outputs.branch }}.zip
           retention-days: 1
