@@ -4,7 +4,7 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
-      - '*' # Push events to matching any tag format, i.e. 1.0, 20.15.10
+      - '*-test' # Push events to matching any tag format, i.e. 1.0, 20.15.10
 
 env:
   PLUGIN_NAME: logseq-copy-code-plugin
@@ -29,7 +29,7 @@ jobs:
           zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
           ls
           echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
-      - name: Upload artifacts
+      - name: Upload zip file
         uses: actions/upload-artifact@v3
         id: upload_artifacts
         env:
@@ -38,3 +38,10 @@ jobs:
           name: ${{ env.PLUGIN_NAME }}
           path:
             ./${{ env.PLUGIN_NAME }}.zip
+      - name: Download zip file
+        uses: actions/download-artifact@v3
+        id: download_artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ${{ env.PLUGIN_NAME }} 
