@@ -8,6 +8,7 @@ on:
 
 env:
   PLUGIN_NAME: logseq-copy-code-plugin
+  PLUGIN_VERSION: ${GITHUB_REF_NAME##*/}
 
 jobs:
   build:
@@ -26,7 +27,7 @@ jobs:
           mkdir ${{ env.PLUGIN_NAME }}
           cp README.md package.json icon.png ${{ env.PLUGIN_NAME }}
           mv dist ${{ env.PLUGIN_NAME }}
-          zip -r ${{ env.PLUGIN_NAME }}-${GITHUB_REF_NAME##*/}.zip ${{ env.PLUGIN_NAME }}
+          zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip ${{ env.PLUGIN_NAME }}
           ls
       - name: Upload zip file
         uses: actions/upload-artifact@v3
@@ -34,5 +35,5 @@ jobs:
         with:
           name: ${{ env.PLUGIN_NAME }}
           path:
-            ./${{ env.PLUGIN_NAME }}-${GITHUB_REF_NAME##*/}.zip
+            ./${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
           retention-days: 1
