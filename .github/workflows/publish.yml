@@ -39,14 +39,3 @@ jobs:
           path:
             ./${{ env.PLUGIN_NAME }}.zip
           retention-days: 1
-      - name: Download zip file
-        uses: actions/download-artifact@v3
-        id: download_artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          name: ${{ env.PLUGIN_NAME }}
-          path:
-            mkdir ${{ env.PLUGIN_NAME }}
-      - name: Display structure of downloaded files
-        run: ls -R
