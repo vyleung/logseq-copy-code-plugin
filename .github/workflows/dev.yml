@@ -32,8 +32,6 @@ jobs:
       - name: Upload zip file
         uses: actions/upload-artifact@v3
         id: upload_artifacts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           name: ${{ env.PLUGIN_NAME }}
           path:
