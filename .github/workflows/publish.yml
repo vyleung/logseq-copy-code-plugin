@@ -19,7 +19,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x' # You might need to adjust this value to your own version
-          ref: 'release/*'
       - name: Build
         id: build
         run: |
@@ -38,8 +37,9 @@ jobs:
           VERSION: ${{ github.ref }}
         with:
           allowUpdates: true
-          draft: false
+          draft: true
           prerelease: false
+          commit: ${{ env.GITHUB_SHA }}
 
       - name: Upload zip file
         id: upload_zip
