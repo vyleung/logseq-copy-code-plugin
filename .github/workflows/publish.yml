@@ -1,9 +1,6 @@
 name: Build plugin
 
 on:
-  release:
-    branches:
-      - 'feature/*'
   push:
     # Sequence of patterns matched against refs/tags
     tags:
@@ -22,6 +19,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x' # You might need to adjust this value to your own version
+          ref: 'release/*'
       - name: Build
         id: build
         run: |
