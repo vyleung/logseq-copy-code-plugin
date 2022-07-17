@@ -26,14 +26,13 @@ jobs:
           mkdir ${{ env.PLUGIN_NAME }}
           cp README.md package.json icon.png ${{ env.PLUGIN_NAME }}
           mv dist ${{ env.PLUGIN_NAME }}
-          zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
+          zip -r ${{ env.PLUGIN_NAME }}-${GITHUB_HEAD_REF-${GITHUB_REF##*/}}.zip ${{ env.PLUGIN_NAME }}
           ls
-          echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
       - name: Upload zip file
         uses: actions/upload-artifact@v3
         id: upload_artifacts
         with:
           name: ${{ env.PLUGIN_NAME }}
           path:
-            ./${{ env.PLUGIN_NAME }}*.zip
+            ./${{ env.PLUGIN_NAME }}-${GITHUB_HEAD_REF-${GITHUB_REF##*/}}.zip
           retention-days: 1
