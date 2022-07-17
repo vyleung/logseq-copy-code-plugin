@@ -35,5 +35,5 @@ jobs:
         with:
           name: ${{ env.PLUGIN_NAME }}
           path:
-            ./${{ env.PLUGIN_NAME }}.zip
+            ./${{ env.PLUGIN_NAME }}*.zip
           retention-days: 1
