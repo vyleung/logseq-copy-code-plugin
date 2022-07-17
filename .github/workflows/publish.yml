@@ -1,9 +1,10 @@
 name: Build plugin
 
 on:
-  push:
+  release:
     branches:
-      - 'release/*'
+      - 'feature/*'
+  push:
     # Sequence of patterns matched against refs/tags
     tags:
       - '*' # Push events to matching any tag format, i.e. 1.0, 20.15.10
