@@ -7,7 +7,7 @@ on:
       - '*' # Push events to matching any tag format, i.e. 1.0, 20.15.10
 
 env:
-  PLUGIN_NAME: logseq-helium-plugin
+  PLUGIN_NAME: logseq-copy-code-plugin
 
 jobs:
   build:

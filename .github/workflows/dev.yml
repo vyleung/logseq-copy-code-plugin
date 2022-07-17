@@ -8,7 +8,7 @@ on:
 
 env:
   PLUGIN_NAME: logseq-copy-code-plugin
-  PLUGIN_VERSION: ${GITHUB_REF_NAME##*/}
+  PLUGIN_VERSION: ${{ github.ref_name##*/ }}
 
 jobs:
   build:
