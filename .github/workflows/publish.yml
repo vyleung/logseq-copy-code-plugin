@@ -3,8 +3,8 @@ name: Build plugin
 on:
   push:
     # Sequence of patterns matched against refs/tags
-    tags:
-      - '*-test' # Push events to matching any tag format, i.e. 1.0, 20.15.10
+    branches:
+      - 'release/*'
 
 env:
   PLUGIN_NAME: logseq-copy-code-plugin
@@ -38,10 +38,13 @@ jobs:
           name: ${{ env.PLUGIN_NAME }}
           path:
             ./${{ env.PLUGIN_NAME }}.zip
+          retention-days: 1
       - name: Download zip file
         uses: actions/download-artifact@v3
         id: download_artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: ${{ env.PLUGIN_NAME }} 
+          name: ${{ env.PLUGIN_NAME }}
+          path:
+            ~/Downloads
