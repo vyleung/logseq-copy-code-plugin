@@ -46,5 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           name: ${{ env.PLUGIN_NAME }}
+          path:
+            /Users/vivianleung/Github/logseq plugins/${{ env.PLUGIN_NAME }}/
       - name: Display structure of downloaded files
         run: ls -R
