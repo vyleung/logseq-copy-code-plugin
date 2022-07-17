@@ -101,7 +101,7 @@ const main = async () => {
       logseq.provideUI({
         key: `${code_block_parent.id}`,
         path: `#block-content-${code_block_uuid} > .block-body > .cp__fenced-code-block > div > #${code_block_parent.id}`,
-        template: 
+        template:
         `
         <a class="button copy-button" id="${code_block_parent.id}-button" data-on-click="copy_code_codeBlock" style="display: flex; position: absolute; background-color: transparent !important;">
           ${copy_icon}
@@ -151,7 +151,7 @@ const main = async () => {
         logseq.provideUI({
           key: `${inline_code.id}`,
           path: `#${inline_code.id}`,
-          template: 
+          template:
           `
           <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="display: none; padding: 0; margin-left: 0.25em; margin-bottom: -1em; background-color: transparent !important;">
             ${copy_icon}
@@ -161,7 +161,7 @@ const main = async () => {
 
         // style container for copy code button
         logseq.provideStyle(`
-          #logseq-copy-code-plugin--${inline_code.id} {
+          #logseq-copy-code-plugin--${inline_code.id}, #${inline_code.id}--logseq-copy-code-plugin {
             display: inline-flex !important;
             position: relative;
             z-index: 99;
