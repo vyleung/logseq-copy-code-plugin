@@ -53,8 +53,8 @@ const main = async () => {
           for (const code of code_mirror) {
             insertCopyCodeButton_CodeBlock();
           }
-          // after exiting edit mode, insert the copy copy button next to inline code
-          const inline_code_text = added_node.querySelectorAll(".content :not(pre) > code");
+          // after exiting edit mode, insert the copy code button next to inline code
+          const inline_code_text = added_node.querySelectorAll(":not(pre) > code");
           for (const text of inline_code_text) {
             insertCopyCodeButton_InlineCode();
           }
@@ -97,13 +97,13 @@ const main = async () => {
       // add an ID (that's the ID of the textarea that contains the content of the code block) to div.extensions__code to differentiate multiple code blocks within one block
       code_block_parent.id = `copy-code-${code_block.id}`;
       
-      // inserts copy code button
+      // insert copy code button
       logseq.provideUI({
         key: `${code_block_parent.id}`,
         path: `#block-content-${code_block_uuid} > .block-body > .cp__fenced-code-block > div > #${code_block_parent.id}`,
         template: 
         `
-        <a class="button copy-button" id="${code_block_parent.id}-button" data-on-click="copy_code_codeBlock" style="display:flex; position:absolute;">
+        <a class="button copy-button" id="${code_block_parent.id}-button" data-on-click="copy_code_codeBlock" style="display: flex; position: absolute; background-color: transparent !important;">
           ${copy_icon}
         </a>
         `
@@ -124,10 +124,10 @@ const main = async () => {
   insertCopyCodeButton_CodeBlock();
 
   function insertCopyCodeButton_InlineCode() {
-    inline_codes = parent.document.querySelectorAll(".content :not(pre) > code");
+    inline_codes = parent.document.querySelectorAll(":not(pre) > code");
 
     // for each inline code, get the uuid of the block that it's in
-    inline_codes.forEach(inline_code => { 
+    inline_codes.forEach(inline_code => {
       if (inline_code.id == "") {
         // generate a string w/ 7 random letters and numbers as the prefix for the inline code's id
         prefix = `copy-code-${(Math.random() + 1).toString(36).substring(5)}-prefix`;
@@ -140,6 +140,9 @@ const main = async () => {
         else if (inline_code.parentElement.offsetParent.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
           inline_code_uuid = inline_code.parentElement.offsetParent.classList[1];
         }
+        else {
+          console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code block's uuid");
+        }
 
         // add an ID to differentiate multiple inline code within one block
         inline_code.id = `${prefix}-${inline_code_uuid}`;
@@ -150,7 +153,7 @@ const main = async () => {
           path: `#${inline_code.id}`,
           template: 
           `
-          <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="display: none; padding: 0; margin-left: 0.25em; border-bottom-color: transparent !important;">
+          <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="display: none; padding: 0; margin-left: 0.25em; margin-bottom: -1em; background-color: transparent !important;">
             ${copy_icon}
           </a>
           `
@@ -159,7 +162,7 @@ const main = async () => {
         // style container for copy code button
         logseq.provideStyle(`
           #logseq-copy-code-plugin--${inline_code.id} {
-            display: inline-flex;
+            display: inline-flex !important;
             position: relative;
             z-index: 99;
             vertical-align: top;
@@ -169,7 +172,7 @@ const main = async () => {
 
         // hovering over an inline code shows a copy code button; leaving the code hides the button
         parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseover", function () {
-          if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
+          if (parent.document.getElementById(`${inline_code.id}-button`) != null) {
             parent.document.getElementById(`${inline_code.id}-button`).style.display = "inline-flex";
           }
           else {
@@ -177,13 +180,22 @@ const main = async () => {
           }
         });
         parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseout", function () {
-          if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
+          if (parent.document.getElementById(`${inline_code.id}-button`) != null) {
             parent.document.getElementById(`${inline_code.id}-button`).style.display = "none";
           }
           else {
             console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code (B)");
           }
         });
+      }
+      else {
+        // if the inline code already has an ID, but does NOT have a copy code button, enter edit mode and then exit edit mode to insert a copy code button
+        if (parent.document.getElementById(`${inline_code.id}-button`) == null) {
+          logseq.Editor.editBlock(inline_code.id.split("prefix-")[1]);
+          setDriftlessTimeout(() => {
+            logseq.Editor.exitEditingMode();
+          }, 50);
+        }
       }
     });
   }
