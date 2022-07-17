@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v3
         id: upload_artifacts
         with:
-          name: ${{ env.PLUGIN_NAME }}
+          name: ${{ env.PLUGIN_NAME }}-${{ steps.plugin_version.outputs.branch }}
           path:
             ./${{ env.PLUGIN_NAME }}-${{ steps.plugin_version.outputs.branch }}.zip
           retention-days: 1
