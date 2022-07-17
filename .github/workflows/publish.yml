@@ -47,6 +47,6 @@ jobs:
         with:
           name: ${{ env.PLUGIN_NAME }}
           path:
-            /Users/vivianleung/Github/logseq plugins/${{ env.PLUGIN_NAME }}/
+            mkdir ${{ env.PLUGIN_NAME }}
       - name: Display structure of downloaded files
         run: ls -R
