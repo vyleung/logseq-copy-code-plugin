@@ -162,6 +162,7 @@ const main = async () => {
             display: inline-flex;
             position: relative;
             z-index: 99;
+            height: 0;
             vertical-align: top;
             top: 0.15em;
           }
