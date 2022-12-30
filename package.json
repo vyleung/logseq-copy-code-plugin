@@ -1,7 +1,7 @@
 {
   "name": "logseq-copy-code-plugin",
-  "version": "1.1.2",
-  "description": "",
+  "version": "1.2.0",
+  "description": "Copy code from code blocks to your clipboard",
   "main": "dist/index.html",
   "targets": {
     "main": false
