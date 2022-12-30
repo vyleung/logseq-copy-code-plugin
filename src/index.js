@@ -15,6 +15,14 @@ const settings = [
     description: "Default: 0em. To move the copy code icon to the right, insert a more positive number (e.g. 1em). To move the copy code icon to the left, insert a more negative number (e.g. -1em)",
     type: "string",
     default: "0em"
+  },
+  {
+    key: "AlwaysShowInlineCopyButton",
+    title: "Always show inline copy code button?",
+    description: "Check the box if you would like the copy code button to always show next to inline code. If unchecked, the copy code button will only appear when hovering over the inline code.",
+    default: false,
+    type: "boolean",
+    enumPicker: "checkbox"
   }
 ]
 logseq.useSettingsSchema(settings);
@@ -150,7 +158,7 @@ const main = async () => {
           path: `#${inline_code.id}`,
           template: 
           `
-          <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="display: none; padding: 0; margin-left: 0.25em; border-bottom-color: transparent !important;">
+          <a class="button copy-button" id="${inline_code.id}-button" data-on-click="copy_code_inlineBlock" style="padding: 0; margin-left: 0.25em; border-bottom-color: transparent !important; background-color: transparent;">
             ${copy_icon}
           </a>
           `
@@ -168,23 +176,39 @@ const main = async () => {
           }
         `)
 
-        // hovering over an inline code shows a copy code button; leaving the code hides the button
-        parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseover", function () {
-          if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
-            parent.document.getElementById(`${inline_code.id}-button`).style.display = "inline-flex";
-          }
-          else {
-            console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code (A)");
-          }
-        });
-        parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseout", function () {
-          if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
-            parent.document.getElementById(`${inline_code.id}-button`).style.display = "none";
-          }
-          else {
-            console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code (B)");
-          }
-        });
+        // always show the copy button for inline code
+        if (logseq.settings.AlwaysShowInlineCopyButton) {
+          logseq.provideStyle(`
+            #${inline_code.id}-button {
+              display: inline-flex;
+            }
+          `)
+        }
+        // show copy button for inline code on hover
+        else {
+          logseq.provideStyle(`
+            #${inline_code.id}-button {
+              display: none;
+            }
+          `)
+          // hovering over an inline code shows a copy code button; leaving the code hides the button
+          parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseover", function () {
+            if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
+              parent.document.getElementById(`${inline_code.id}-button`).style.display = "inline-flex";
+            }
+            else {
+              console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code (A)");
+            }
+          });
+          parent.document.getElementById(`${inline_code.id}`).addEventListener("mouseout", function () {
+            if (parent.document.getElementById(`${inline_code.id}-button`) != "null") {
+              parent.document.getElementById(`${inline_code.id}-button`).style.display = "none";
+            }
+            else {
+              console.log("logseq-copy-code-plugin: ERROR - Cannot find inline code (B)");
+            }
+          });
+        }
       }
     });
   }
