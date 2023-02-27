@@ -14,7 +14,7 @@
   "author": "vyleung",
   "license": "MIT",
   "dependencies": {
-    "@logseq/libs": "^0.0.6",
+    "@logseq/libs": "^0.0.14",
     "driftless": "^2.0.3",
     "parcel": "^2.5.0"
   },
