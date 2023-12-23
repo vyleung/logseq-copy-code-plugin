@@ -17,20 +17,17 @@ const settings = [
     default: "0em"
   },
   {
-    key: "ShowCopyInlineCodeIcon",
-    title: "Show copy code icon for inline code?",
-    description: "Check the box if you would like to show a copy code icon for inline code. If unchecked, the copy code icon will not show for inline code.",
-    type: "boolean",
-    default: true,
-    enumPicker: "checkbox"
-  },
-  {
-    key: "AlwaysShowInlineCopyButton",
-    title: "Always show inline copy code button?",
-    description: "Check the box if you would like the copy code button to always show next to inline code. If unchecked, the copy code button will only appear when hovering over the inline code.",
-    default: false,
-    type: "boolean",
-    enumPicker: "checkbox"
+    key: "InlineCopyButtonStyle",
+    title: "Inline copy code button style",
+    description: "Choose how you would like the copy code button to appear next to inline code.",
+    type: "enum",
+    default: "Show on hover",
+    enumChoices: [
+      "Always show",
+      "Show on hover",
+      "Never show"
+    ],
+    enumPicker: "select"
   }
 ]
 logseq.useSettingsSchema(settings);
@@ -72,9 +69,7 @@ const main = async () => {
           // after exiting edit mode, insert the copy copy button next to inline code
           const inline_code_text = added_node.querySelectorAll(".content :not(pre) > code");
           for (const text of inline_code_text) {
-            if (logseq.settings.ShowCopyInlineCodeIcon) {
-              insertCopyCodeButton_InlineCode();
-            }
+            insertCopyCodeButton_InlineCode();
           }
         }
       }
@@ -187,10 +182,18 @@ const main = async () => {
         `)
 
         // always show the copy button for inline code
-        if (logseq.settings.AlwaysShowInlineCopyButton) {
+        if (logseq.settings.InlineCopyButtonStyle == "Always show") {
           logseq.provideStyle(`
             #${inline_code.id}-button {
               display: inline-flex;
+            }
+          `)
+        }
+        // don't show copy button for inline code when UI inserted before setting changed
+        else if (logseq.settings.InlineCopyButtonStyle == "Never show") {
+          logseq.provideStyle(`
+            #${inline_code.id}-button {
+              display: none;
             }
           `)
         }
