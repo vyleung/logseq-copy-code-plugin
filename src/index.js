@@ -17,6 +17,14 @@ const settings = [
     default: "0em"
   },
   {
+    key: "ShowCopyInlineCodeIcon",
+    title: "Show copy code icon for inline code?",
+    description: "Check the box if you would like to show a copy code icon for inline code. If unchecked, the copy code icon will not show for inline code.",
+    type: "boolean",
+    default: true,
+    enumPicker: "checkbox"
+  },
+  {
     key: "AlwaysShowInlineCopyButton",
     title: "Always show inline copy code button?",
     description: "Check the box if you would like the copy code button to always show next to inline code. If unchecked, the copy code button will only appear when hovering over the inline code.",
@@ -64,7 +72,9 @@ const main = async () => {
           // after exiting edit mode, insert the copy copy button next to inline code
           const inline_code_text = added_node.querySelectorAll(".content :not(pre) > code");
           for (const text of inline_code_text) {
-            insertCopyCodeButton_InlineCode();
+            if (logseq.settings.ShowCopyInlineCodeIcon) {
+              insertCopyCodeButton_InlineCode();
+            }
           }
         }
       }
