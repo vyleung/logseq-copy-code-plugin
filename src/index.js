@@ -84,23 +84,14 @@ const main = async () => {
 
     // for each code block, get the uuid of the block that it's in
     code_blocks.forEach(code_block => {
-      // for plugin dev
-      if (code_block.parentElement.offsetParent.offsetParent.offsetParent.classList.contains("ls-block")) {
-        code_block_uuid = code_block.parentElement.offsetParent.offsetParent.offsetParent.classList[1];
-
-        // .extensions__code
-        code_block_parent = code_block.parentElement.offsetParent;
-      }
-      // for plugin prod
-      else if (code_block.parentElement.offsetParent.offsetParent.classList.contains("ls-block")) {
-        code_block_uuid = code_block.parentElement.offsetParent.offsetParent.classList[1];
-
-        // .extensions__code
-        code_block_parent = code_block.parentElement.offsetParent;
-      }
-      else {
+      // find the block and .extensions__code with closest(): offsetParent is null for a code block that is not rendered (e.g. inside display: none)
+      const code_block_block = code_block.closest(".ls-block");
+      code_block_parent = code_block.closest(".extensions__code");
+      if (!code_block_block || !code_block_parent) {
         console.log("logseq-copy-code-plugin: ERROR - Cannot find code block's uuid");
+        return;
       }
+      code_block_uuid = code_block_block.classList[1];
       
       // add an ID (that's the ID of the textarea that contains the content of the code block) to div.extensions__code to differentiate multiple code blocks within one block
       code_block_parent.id = `copy-code-${code_block.id}`;
@@ -140,13 +131,10 @@ const main = async () => {
         // generate a string w/ 7 random letters and numbers as the prefix for the inline code's id
         prefix = `copy-code-${(Math.random() + 1).toString(36).substring(5)}-prefix`;
 
-        // for plugin dev
-        if (inline_code.parentElement.offsetParent.parentElement.parentElement.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
-          inline_code_uuid = inline_code.parentElement.offsetParent.parentElement.parentElement.classList[1];
-        }
-        // for plugin prod
-        else if (inline_code.parentElement.offsetParent.classList.contains("ls-block") && inline_code.parentElement.classList.contains("inline")) {
-          inline_code_uuid = inline_code.parentElement.offsetParent.classList[1];
+        // find the block with closest(): offsetParent is null for inline code that is not rendered (e.g. inside display: none)
+        const inline_code_block = inline_code.closest(".ls-block");
+        if (inline_code_block && inline_code.parentElement.classList.contains("inline")) {
+          inline_code_uuid = inline_code_block.classList[1];
         }
 
         // add an ID to differentiate multiple inline code within one block
